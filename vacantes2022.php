@@ -1,12 +1,12 @@
 <?php
 
-header('Content-Type: text/html; charset=iso-8859-1');
+header('Content-Type: text/html; charset=UTF-8');
 
 $resultado = array();
 $resultado_final = array();
 
-$entrada = "in/adjudicacionesesp2-20220724.csv";
-$salida = "out/adjudicacionesesp2-20220724.csv";
+$entrada = "in/adjudicacionesesp3-20220724.csv";
+$salida = "out/adjudicacionesesp3-20220724.csv";
 
 if (($gestor = fopen($entrada, "r")) !== FALSE) {
     while (($datos = fgetcsv($gestor, 1000, ",")) !== FALSE) {
@@ -18,20 +18,40 @@ if (($gestor = fopen($entrada, "r")) !== FALSE) {
 
         for ($c=0; $c < $numero; $c++) {
            //echo "=================== COLUMNA $c =======================<br>";
-            if(substr($datos[$c], 0,4)== "****"){
-               $fila['plaza'] = substr($datos[0],4,4);
+            if(substr($datos[$c], 4,2)== " (" && is_numeric(substr($datos[0],0,4))){
+               $fila['plaza'] = substr($datos[0],0,4);
                
                if (isset($fila) && !empty($fila)){
                 $resultado[] = $fila;
                 $fila = array();
-             }
-            }elseif(substr($datos[$c], 0,3)== "***"){
-               $fila['plaza'] = substr($datos[0],3,4);
-              
+               }
+            }
+
+            if(substr($datos[$c], 3,2)== " (" && is_numeric(substr($datos[0],0,3))){
+               $fila['plaza'] = substr($datos[0],0,3);
+               
                if (isset($fila) && !empty($fila)){
                 $resultado[] = $fila;
                 $fila = array();
-              }
+               }
+            }
+
+            if(substr($datos[$c], 2,2)== " (" && is_numeric(substr($datos[0],0,2))){
+               $fila['plaza'] = substr($datos[0],0,2);
+               
+               if (isset($fila) && !empty($fila)){
+                $resultado[] = $fila;
+                $fila = array();
+               }
+            }
+
+            if(substr($datos[$c], 1,2)== " (" && is_numeric(substr($datos[0],0,1))){
+               $fila['plaza'] = substr($datos[0],0,1);
+               
+               if (isset($fila) && !empty($fila)){
+                $resultado[] = $fila;
+                $fila = array();
+               }
             }
 
             if(substr($datos[$c], 4,3) == " - "){
@@ -68,9 +88,9 @@ if (($gestor = fopen($entrada, "r")) !== FALSE) {
 //print_r($resultado);
 
 // Cabecera
+$final['plaza'] = "Plaza";
 $final['tipo'] = "Tipo";
 $final['especialidad'] = "Especialidad";
-$final['plaza'] = "Plaza";
 $final['adjudicatario'] = "Adjudicatario";
 $resultado_final[] = $final;
 unset($final);
